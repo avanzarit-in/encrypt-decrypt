@@ -23,7 +23,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-typescript": "^7.7.7",
-    "@types/node": "^13.1.1",
+    "@types/node": "^13.1.6",
     "babel-loader": "^8.0.4",
     "nodemon": "^2.0.2",
     "ts-node": "^8.5.4",
@@ -33,6 +33,30 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "typescript-tslint-plugin": "^0.5.5"
+    "@types/body-parser": "^1.17.1",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/cors": "^2.8.6",
+    "@types/express": "^4.17.2",
+    "@types/morgan": "^1.7.37",
+    "@types/swagger-jsdoc": "^3.0.2",
+    "body-parser": "^1.19.0",
+    "cls-hooked": "^4.2.2",
+    "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.16.4",
+    "express-jwt": "^5.3.1",
+    "hat": "0.0.3",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.9.1",
+    "nodemailer": "^6.2.1",
+    "pg": "^7.11.0",
+    "sequelize": "^5.8.6",
+    "sequelize-cli": "^5.4.0",
+    "structure": "^1.8.0",
+    "swagger-jsdoc": "^3.4.0",
+    "typescript-tslint-plugin": "^0.5.5",
+    "uuid4": "^1.1.4",
+    "winston": "^3.2.1"
   }
 }

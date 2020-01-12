@@ -2,7 +2,8 @@ var path = require('path');
 
 module.exports = {
     // Change to your "entry-point".
-    entry: './src/main',
+    target: 'node',
+    entry: './src/app',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'app.bundle.js'
