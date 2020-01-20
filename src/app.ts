@@ -1,80 +1,39 @@
-import express from "express";
-import{Request,Response} from "express";
-import path from 'path';
-import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
-import errorHandler from './middlewares/error.handler';
-import routes from './routes';
+import express from 'express';
+import * as path from 'path';
+import * as cookieParser from 'cookie-parser';
+import * as bodyParser from 'body-parser';
 import swaggerJSDoc from 'swagger-jsdoc';
-import  morgan from 'morgan';
-import  cors from 'cors';
-const app = express();
+import morgan from 'morgan';
+import cors from 'cors';
+import { IController } from './application-layer/IController';
 
-// swagger definition
-let swaggerDefinition = {
-    info: {
-      title: 'CRM Service API',
-      version: '1.0.0',
-      description: 'CRM RESTful API Documentation',
-    },
-    host: 'localhost:3001',
-    basePath: '/',
-  };
-  
-  // options for the swagger docs
-  let options = {
-    // import swaggerDefinitions
-    swaggerDefinition: swaggerDefinition,
-    // path to the API docs
-    apis: [
-    './routes/index.js',
-    './routes/accounts/index.js',
-    './domain-layer/account/account.js',
-     './domain-layer/account/accountCreateRequest.js',
-    './domain-layer/department/department.js',
-    './domain-layer/group/group.js',
-    './domain-layer/role/role.js',
-    './domain-layer/user/user.js',
-    ],
-  };
-  
-  // initialize swagger-jsdoc
-  let swaggerSpec = swaggerJSDoc(options);
+class App {
+  public app: express.Application;
+  public port: string;
+  public controllerMap: Map<string, IController<any, any, any, any>>;
 
-  
-app.use(cors());
-app.use(morgan('dev', {
-    skip: function (req:Request, res:Response) {
-        return res.statusCode < 400
-    }, stream: process.stderr
-}));
+  constructor(controllers: Map<string, IController<any, any, any, any>>, port: string) {
+    this.app = express();
+    this.port = port;
+    this.controllerMap = controllers;
 
-app.use(morgan('dev', {
-    skip: function (req:Request, res:Response) {
-        return res.statusCode >= 400
-    }, stream: process.stdout
-}));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use('/public',express.static(path.join(__dirname, './../public')));
+    this.initializeMiddlewares();
+  }
 
-app.use('/', routes);
+  private initializeMiddlewares() {
+    this.app.use(bodyParser.json());
+  }
 
-// serve swagger
-app.get('/swagger.json', function(req:Request, res:Response) {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
-  });
+  public getController(name: string): IController<any, any, any, any> {
+    return this.controllerMap.get(name);
+  }
 
+  public listen() {
+    this.app.listen(this.port, () => {
+      // tslint:disable-next-line: no-console
+      console.log(`App listening on the port ${this.port}`);
+    });
+  }
+}
 
-app.use(errorHandler);
-
-const envType = (process.env.NODE_ENV || 'development');
-
-require('dotenv').config({path: './config/env/' + envType + '.js'});
-
-app.listen(process.env.SERVER_PORT, () => {
-    console.log("Up and Running! -- This is our User Microservice at " + process.env.SERVER_PORT);
-})
-
+export default App;

@@ -1,16 +1,13 @@
-const winston = require("winston");
+import winston from 'winston';
 
 const level = process.env.LOG_LEVEL || 'info';
 
 const logger = winston.createLogger({
     transports: [
         new winston.transports.Console({
-            level: level,
-            timestamp: function () {
-                return (new Date()).toISOString();
-            }
-        })
-    ]
+            level,
+        }),
+    ],
 });
 
-module.exports = logger
+export default logger;

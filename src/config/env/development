@@ -1,0 +1,22 @@
+/* This file can include shared settings for a development environment,
+ * such as API keys or remote database passwords.  If you're using
+ * a version control solution for your Express app, this file will
+ * be committed to your repository unless you add it to your .gitignore
+ * file.  If your repository will be publicly viewable, don't add
+ * any private information to this file!
+ *
+ */
+
+
+API_ENV='local'
+SERVER_PORT='45452'
+DATABASE_JSON='database.json'
+
+
+  
+   
+
+    
+
+
+

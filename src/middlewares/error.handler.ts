@@ -1,7 +1,6 @@
+import { Request, Response, NextFunction } from 'express';
 
-import {Request,Response,NextFunction} from "express";
-
-const errorHandler = (err:any, req: Request, res: Response, next:NextFunction) => {
+const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
     if (typeof (err) === 'string') {
         // custom application error
         return res.status(400).json({ message: err });
@@ -14,6 +13,6 @@ const errorHandler = (err:any, req: Request, res: Response, next:NextFunction) =
 
     // default to 500 server error
     return res.status(500).json({ message: err.message });
-}
+};
 
 export default errorHandler;
