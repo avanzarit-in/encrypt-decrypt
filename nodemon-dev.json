@@ -3,5 +3,5 @@
     "ext": "ts",
     "ignore": ["src/public"],
     "delay": "30",
-    "exec": "set NODE_ENV=development & ts-node src/app.ts"
+    "exec": "set NODE_ENV=development & ts-node src/server.ts"
   }

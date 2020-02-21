@@ -6,7 +6,9 @@ import { createRepository } from './infrastructure-layer/IReposiroty';
 import { BasicController } from './application-layer/basic/BasicController';
 import { BasicService } from './application-layer/basic/BasicService';
 import { BasicRepository } from './infrastructure-layer/BasicRepository';
+import CryptoUtils from './utils/CryptoUtils';
 
+/*
 const controllersMap: Map<string, IController<any, any, any, any>> = new Map<string, IController<any, any, any, any>>();
 controllersMap.set(BasicController.name, createController(BasicController, createService(BasicService, createRepository(BasicRepository) as BasicRepository) as BasicService));
 
@@ -16,3 +18,10 @@ export const app = new App(
 );
 
 app.listen();
+*/
+
+const util:CryptoUtils=new CryptoUtils();
+
+const encValue=util.encrypt("santosh");
+console.log(encValue);
+console.log(util.decrypt(encValue));
