@@ -1,4 +1,5 @@
 import express from 'express';
+import 'reflect-metadata';
 import * as path from 'path';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
@@ -7,7 +8,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { IController } from './application-layer/IController';
 import { createConnection } from 'typeorm';
-import 'reflect-metadata';
+
 import routes from './routes';
 
 class App {
@@ -33,7 +34,7 @@ class App {
   }
 
   public listen() {
-    this.app.listen(this.port, () => {
+  
 
       createConnection({
         type: 'postgres',
@@ -43,15 +44,15 @@ class App {
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_SCHEMA,
         synchronize: true,
-        logging: false,
+        logging: true,
         entities: [
-          'infrastructure-layer/models/**/*.ts',
+          __dirname +'/infrastructure-layer/models/**/*.ts',
         ],
         migrations: [
-          'infrastructure-layer/migration/**/*.ts',
+          __dirname +'/infrastructure-layer/migration/**/*.ts',
         ],
         subscribers: [
-          'infrastructure-layer/subscriber/**/*.ts',
+          __dirname +'/infrastructure-layer/subscriber/**/*.ts',
         ],
         cli: {
           entitiesDir: 'infrastructure-layer/models',
@@ -59,11 +60,13 @@ class App {
           subscribersDir: 'infrastructure-layer/subscriber',
         },
       }).then(async (connection) => {
+        
         console.log('Connection setup successfully.');
+          this.app.listen(this.port, () => {
         console.log(`App listening on the port ${this.port}`);
+        });
       }).catch((error) => console.log(error));
-
-    });
+   
   }
 }
 

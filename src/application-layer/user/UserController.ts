@@ -14,6 +14,7 @@ export class UserController implements IController<UserEntityModel, UserEntity, 
         this.userService = userService;
     }
     public create(req: Request, res: Response, next: NextFunction): void {
+        const model:UserEntityModel = new UserEntityModel();
         const entity: IEntity<UserEntityModel> = createEntity(UserEntity, new UserEntityModel());
         this.userService.create(entity as UserEntity);
         const entityModel: UserEntityModel = entity.queryParam();
@@ -30,7 +31,7 @@ export class UserController implements IController<UserEntityModel, UserEntity, 
     }
 
     public list(req: Request, res: Response, next: NextFunction): void {
-        throw new Error('Method not implemented.');
+        console.log("List Items")
     }
 
     public fetch(req: Request, res: Response, next: NextFunction): void {

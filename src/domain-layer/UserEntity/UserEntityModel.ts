@@ -1,6 +1,6 @@
-import { User } from './../../infrastructure-layer/models/User';
+import { Users } from './../../infrastructure-layer/models/Users';
 
-export class UserEntityModel extends User {
+export class UserEntityModel extends Users {
     public constructor() {
         super();
     }
