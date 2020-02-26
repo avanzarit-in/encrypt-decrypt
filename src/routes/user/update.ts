@@ -1,9 +1,9 @@
 import { app } from '../../server';
 import { Request, Response, NextFunction } from 'express';
-import { BasicController } from '../../application-layer/basic/BasicController';
+import { UserController } from '../../application-layer/user/UserController';
 
 const update = (req: Request, res: Response, next: NextFunction) => {
-  app.getController(BasicController.name).update(req, res, next);
+  app.getController(UserController.name).update(req, res, next);
 };
 
 export default update;

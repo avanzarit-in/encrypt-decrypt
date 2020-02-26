@@ -1,9 +1,9 @@
 import { app } from '../../server';
 import { Request, Response, NextFunction } from 'express';
-import { BasicController } from '../../application-layer/basic/BasicController';
+import { UserController } from '../../application-layer/user/UserController';
 
 const list = (req: Request, res: Response, next: NextFunction) => {
-  app.getController(BasicController.name).list(req, res, next);
+  app.getController(UserController.name).list(req, res, next);
 };
 
 export default list;

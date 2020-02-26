@@ -6,6 +6,9 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import morgan from 'morgan';
 import cors from 'cors';
 import { IController } from './application-layer/IController';
+import { createConnection } from 'typeorm';
+import 'reflect-metadata';
+import routes from './routes';
 
 class App {
   public app: express.Application;
@@ -22,6 +25,7 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use(bodyParser.json());
+    this.app.use('/', routes);
   }
 
   public getController(name: string): IController<any, any, any, any> {
@@ -30,8 +34,35 @@ class App {
 
   public listen() {
     this.app.listen(this.port, () => {
-      // tslint:disable-next-line: no-console
-      console.log(`App listening on the port ${this.port}`);
+
+      createConnection({
+        type: 'postgres',
+        host: process.env.DATABASE_HOST,
+        port: parseInt(process.env.DATABASE_PORT, 10),
+        username: process.env.DATABASE_USERNAME,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_SCHEMA,
+        synchronize: true,
+        logging: false,
+        entities: [
+          'infrastructure-layer/models/**/*.ts',
+        ],
+        migrations: [
+          'infrastructure-layer/migration/**/*.ts',
+        ],
+        subscribers: [
+          'infrastructure-layer/subscriber/**/*.ts',
+        ],
+        cli: {
+          entitiesDir: 'infrastructure-layer/models',
+          migrationsDir: 'infrastructure-layer/migration',
+          subscribersDir: 'infrastructure-layer/subscriber',
+        },
+      }).then(async (connection) => {
+        console.log('Connection setup successfully.');
+        console.log(`App listening on the port ${this.port}`);
+      }).catch((error) => console.log(error));
+
     });
   }
 }

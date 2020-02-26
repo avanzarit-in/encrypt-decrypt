@@ -1,12 +1,12 @@
 import express from 'express';
-import basic from './basic';
+import user from './user';
 
 const routes = express.Router();
 
-routes.use('/basic', basic);
+routes.use('/user', user);
 
 routes.get('/', (req, res) => {
   res.status(200).json({ message: 'Connected!' });
 });
 
-module.exports = routes;
+export default routes;

@@ -1,9 +1,9 @@
 import { app } from '../../server';
 import { Request, Response, NextFunction } from 'express';
-import { BasicController } from '../../application-layer/basic/BasicController';
+import { UserController } from '../../application-layer/user/UserController';
 
 const fetch = (req: Request, res: Response, next: NextFunction) => {
-  app.getController(BasicController.name).fetch(req, res, next);
+  app.getController(UserController.name).fetch(req, res, next);
 };
 
 export default fetch;
