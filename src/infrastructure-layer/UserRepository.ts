@@ -1,19 +1,32 @@
 import { IRepository } from './IReposiroty';
-import { UserEntity } from '../domain-layer/UserEntity/UserEntity';
-import { UserEntityModel } from '../domain-layer/UserEntity/UserEntityModel';
+import { UserEntity } from '../domain-layer/UserEntity';
+import { Users } from '../infrastructure-layer/models/Users';
+import { getRepository, UpdateResult, DeleteResult } from 'typeorm';
 
-export class UserRepository implements IRepository<UserEntityModel, UserEntity> {
-    public delete = (entity: UserEntity) => {
-        return new UserEntityModel();
+export class UserRepository implements IRepository<Users, UserEntity> {
+    public async delete(entity: UserEntity): Promise<DeleteResult> {
+        const userRepository = getRepository(Users);
+        return await userRepository.delete(entity.getEntity().nuid);
     }
 
-    public create = (entity: UserEntity) => {
-        return new UserEntityModel();
+    public async create(entity: UserEntity) {
+        const userRepository = getRepository(Users);
+        entity.getEntity().createdAt = new Date();
+        await userRepository.insert(entity.getEntity());
     }
 
-    public update: (entity: UserEntity) => void;
-    public findAll: (entity: UserEntity) => void;
-    public findOne: (entity: UserEntity) => void;
+    public async update(entity: UserEntity): Promise<UpdateResult> {
+        const userRepository = getRepository(Users);
+        return await userRepository.update(entity.getEntity().nuid, entity.getEntity());
+    }
 
+    public async findAll(): Promise<Users[]> {
+        const userRepository = getRepository(Users);
+        return await userRepository.find();
+    }
 
+    public async findOne(entity: UserEntity): Promise<Users> {
+        const userRepository = getRepository(Users);
+        return await userRepository.findOneOrFail(entity.getEntity().nuid);
+    }
 }

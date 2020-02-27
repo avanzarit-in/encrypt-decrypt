@@ -1,14 +1,14 @@
-import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import 'reflect-metadata';
+import { Entity, PrimaryColumn, Column } from 'typeorm';
 
 @Entity()
 export class Users {
-
-    @PrimaryGeneratedColumn()
-    public nuid: number;
+    @PrimaryColumn()
+    public nuid?: number;
 
     @Column()
-    public pin: string;
+    public pin?: string;
 
-    @Column({name:"created_at"})
-    public createdAt: Date;
+    @Column({ name: 'created_at' })
+    public createdAt?: Date;
 }

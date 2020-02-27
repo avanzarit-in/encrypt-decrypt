@@ -1,6 +1,6 @@
 export interface IEntity<T> {
-    updateParam: () => T;
-    queryParam: () => T;
+    getJson: () => string;
+    getEntity: () => T;
 }
 
 export type IEntityConstructor<T> = new (entityModel: T) => IEntity<T>;

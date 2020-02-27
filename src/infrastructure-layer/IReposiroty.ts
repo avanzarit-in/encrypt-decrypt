@@ -2,11 +2,11 @@
 import { IEntity } from './../domain-layer/IEntity';
 
 export interface IRepository<K, T extends IEntity<K>> {
-    create: (entity: T) => K;
-    delete: (entity: T) => K;
+    create: (entity: T) => void;
+    delete: (entity: T) => void;
     update: (entity: T) => void;
-    findAll: (entity: T) => void;
-    findOne: (entity: T) => void;
+    findAll: () => Promise<K[]>;
+    findOne: (entity: T) => Promise<K>;
 }
 
 // tslint:disable-next-line: max-line-length

@@ -5,7 +5,7 @@ export interface IService<T, K extends IEntity<T>, Z extends IRepository<T, K>> 
     create: (entity: K) => void;
     update: (entity: K) => void;
     delete: (entity: K) => void;
-    findAll: (entity: K) => void;
+    findAll: () => void;
     fetch: (entity: K) => void;
 }
 
