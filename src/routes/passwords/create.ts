@@ -1,9 +1,9 @@
 import { app } from '../../server';
 import { Request, Response, NextFunction } from 'express';
-import { UserController } from '../../application-layer/user/UserController';
+import { PasswordController } from '../../application-layer/Password/PasswordController';
 
 const create = (req: Request, res: Response, next: NextFunction) => {
-  app.getController(UserController.name).create(req, res, next);
+  app.getController(PasswordController.name).create(req, res, next);
 };
 
 export default create;

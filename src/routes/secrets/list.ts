@@ -1,9 +1,9 @@
 import { app } from '../../server';
 import { Request, Response, NextFunction } from 'express';
-import { UserController } from '../../application-layer/user/UserController';
+import { SecretController } from '../../application-layer/Secret/SecretController';
 
 const list = (req: Request, res: Response, next: NextFunction) => {
-  app.getController(UserController.name).list(req, res, next);
+  app.getController(SecretController.name).list(req, res, next);
 };
 
 export default list;

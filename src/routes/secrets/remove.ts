@@ -1,9 +1,9 @@
 import { app } from '../../server';
 import { Request, Response, NextFunction } from 'express';
-import { UserController } from '../../application-layer/user/UserController';
+import { SecretController } from '../../application-layer/Secret/SecretController';
 
 const remove = (req: Request, res: Response, next: NextFunction) => {
-  app.getController(UserController.name).delete(req, res, next);
+  app.getController(SecretController.name).delete(req, res, next);
 };
 
 export default remove;
