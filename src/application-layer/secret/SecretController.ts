@@ -3,7 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 import { createEntity} from '../../domain-layer/IEntityWithFk';
 import { SecretsEntity } from '../../domain-layer/SecretsEntity';
 import { Secrets } from '../../infrastructure-layer/models/Secrets';
-import { IEntity } from '../../domain-layer/IEntity';
 import { SecretService } from './SecretService';
 import { SecretRepository } from '../../infrastructure-layer/SecretRepository';
 import CryptoUtils from './../../utils/CryptoUtils';
