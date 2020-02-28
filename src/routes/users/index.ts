@@ -6,6 +6,9 @@ import list from './list';
 import fetch from './fetch';
 import update from './update';
 
+import secrets from './secrets';
+import passwords from './passwords';
+
 const routes = express.Router(({ mergeParams: true }));
 
 routes.post('/', create);
@@ -17,5 +20,8 @@ routes.get('/:nuid', fetch);
 routes.delete('/:nuid', del);
 
 routes.put('/:nuid', update);
+
+routes.use('/:nuid/secrets', secrets);
+routes.use('/:nuid/passwords', passwords);
 
 export default routes;

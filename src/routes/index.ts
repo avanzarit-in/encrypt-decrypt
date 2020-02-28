@@ -1,7 +1,7 @@
 import express from 'express';
 import users from './users';
-import passwords from './passwords';
-import secrets from './secrets';
+import passwords from './users/passwords';
+import secrets from './users/secrets';
 
 const routes = express.Router();
 
