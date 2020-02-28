@@ -1,5 +1,5 @@
 import { IService } from '../IService';
-import { SecretEntity } from '../../domain-layer/SecretEntity';
+import { SecretsEntity } from '../../domain-layer/SecretsEntity';
 import { Secrets } from '../../infrastructure-layer/models/Secrets';
 import { SecretRepository } from '../../infrastructure-layer/SecretRepository';
 import { UpdateResult, DeleteResult } from 'typeorm';
@@ -17,7 +17,7 @@ export interface ISecretServiceEvents {
     CLEANUP: () => void;
 }
 
-export class SecretService extends EventEmitter<ISecretServiceEvents> implements IService<Secrets, SecretEntity, SecretRepository>  {
+export class SecretService extends EventEmitter<ISecretServiceEvents> implements IService<Secrets, SecretsEntity, SecretRepository>  {
 
     private repository: SecretRepository;
     constructor(repository: SecretRepository) {
@@ -25,21 +25,21 @@ export class SecretService extends EventEmitter<ISecretServiceEvents> implements
         this.repository = repository;
     }
 
-    public create(entity: SecretEntity) {
+    public create(entity: SecretsEntity) {
         this.repository.create(entity).then(() => {
             this.emit('CREATE_SUCCESS');
         }).catch((error) => {
             return this.emit('ERROR', error);
         });
     }
-    public update(entity: SecretEntity) {
+    public update(entity: SecretsEntity) {
         this.repository.update(entity).then((result: UpdateResult) => {
             this.emit('UPDATE_SUCCESS', result);
         }).catch((error) => {
             this.emit('ERROR', error);
         });
     }
-    public delete(entity: SecretEntity) {
+    public delete(entity: SecretsEntity) {
         this.repository.delete(entity).then((result: DeleteResult) => {
             this.emit('DELETE_SUCCESS', result);
         }).catch((error) => {
@@ -53,7 +53,7 @@ export class SecretService extends EventEmitter<ISecretServiceEvents> implements
             this.emit('ERROR', error);
         });
     }
-    public fetch(entity: SecretEntity) {
+    public fetch(entity: SecretsEntity) {
         this.repository.findOne(entity).then((result: Secrets) => {
             this.emit('FETCH_SUCCESS', result);
         }).catch((error) => {

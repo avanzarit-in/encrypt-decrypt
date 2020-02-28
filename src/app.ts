@@ -8,6 +8,9 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { IController } from './application-layer/IController';
 import { createConnection } from 'typeorm';
+import { Users } from './infrastructure-layer/models/Users';
+import { Passwords } from './infrastructure-layer/models/Passwords';
+import { Secrets } from './infrastructure-layer/models/Secrets';
 
 import routes from './routes';
 
@@ -37,7 +40,32 @@ class App {
 
   public listen() {
 
-
+    console.log({
+      type: 'postgres',
+      host: process.env.DATABASE_HOST,
+      port: parseInt(process.env.DATABASE_PORT, 10),
+      username: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_SCHEMA,
+      synchronize: true,
+      logging: true,
+      entities: [
+        Users,
+        Passwords,
+        Secrets
+      ],
+      migrations: [
+        __dirname + 'infrastructure-layer/migration/**/*.ts',
+      ],
+      subscribers: [
+        __dirname + 'infrastructure-layer/subscriber/**/*.ts',
+      ],
+      cli: {
+        entitiesDir: 'infrastructure-layer/models',
+        migrationsDir: 'infrastructure-layer/migration',
+        subscribersDir: 'infrastructure-layer/subscriber',
+      },
+    });
     createConnection({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
@@ -48,13 +76,15 @@ class App {
       synchronize: true,
       logging: true,
       entities: [
-        './infrastructure-layer/models/**/*.ts',
+        Users,
+        Passwords,
+        Secrets
       ],
       migrations: [
-        './infrastructure-layer/migration/**/*.ts',
+        __dirname + '/infrastructure-layer/migration/**/*.ts',
       ],
       subscribers: [
-        './infrastructure-layer/subscriber/**/*.ts',
+        __dirname + '/infrastructure-layer/subscriber/**/*.ts',
       ],
       cli: {
         entitiesDir: 'infrastructure-layer/models',

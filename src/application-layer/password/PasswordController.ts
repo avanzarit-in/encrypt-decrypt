@@ -7,12 +7,13 @@ import { IEntity } from '../../domain-layer/IEntity';
 import { PasswordService } from './PasswordService';
 import { PasswordRepository } from '../../infrastructure-layer/PasswordRepository';
 import CryptoUtils from './../../utils/CryptoUtils';
+import { UpdateResult, DeleteResult } from 'typeorm';
 
 export class PasswordController implements IController<Passwords, PasswordEntity, PasswordRepository, PasswordService> {
-    private PasswordService: PasswordService;
+    private passwordService: PasswordService;
 
-    public constructor(PasswordService: PasswordService) {
-        this.PasswordService = PasswordService;
+    public constructor(passwordService: PasswordService) {
+        this.passwordService = passwordService;
     }
     public create(req: Request, res: Response, next: NextFunction): void {
         const model: Passwords = new Passwords();
@@ -20,14 +21,14 @@ export class PasswordController implements IController<Passwords, PasswordEntity
         model.pin = CryptoUtils.encrypt(req.body.pin.toString());
         const entity: IEntity<Passwords> = createEntity(PasswordEntity, model);
 
-        this.PasswordService.once('CREATE_SUCCESS', () => {
+        this.passwordService.once('CREATE_SUCCESS', () => {
             res.status(200).json({});
         }).once('ERROR', (error) => {
 
             res.status(500).json({ error });
         });
 
-        this.PasswordService.create(entity as PasswordEntity);
+        this.passwordService.create(entity as PasswordEntity);
     }
 
 
@@ -37,13 +38,22 @@ export class PasswordController implements IController<Passwords, PasswordEntity
         model.pin = CryptoUtils.encrypt(req.body.pin.toString());
         const entity: IEntity<Passwords> = createEntity(PasswordEntity, model);
 
-        this.PasswordService.once('UPDATE_SUCCESS', (result) => {
+        const dataListener = (result: UpdateResult) => {
+            this.passwordService.emit('CLEANUP');
             res.status(200).json(result);
-        }).once('ERROR', (error) => {
+        }
+
+        const errorListener = (error: Error) => {
+            this.passwordService.emit('CLEANUP');
             res.status(500).json({ error });
+        }
+
+        this.passwordService.on('UPDATE_SUCCESS', dataListener).on('ERROR', errorListener).once('CLEANUP', () => {
+            this.passwordService.removeListener('UPDATE_SUCCESS', dataListener);
+            this.passwordService.removeListener('ERROR', errorListener);
         });
 
-        this.PasswordService.update(entity as PasswordEntity);
+        this.passwordService.update(entity as PasswordEntity);
     }
 
 
@@ -54,20 +64,20 @@ export class PasswordController implements IController<Passwords, PasswordEntity
                 item.pin = CryptoUtils.decrypt(item.pin);
                 return item;
             });
-            this.PasswordService.emit('CLEANUP');
+            this.passwordService.emit('CLEANUP');
             res.status(200).json(data);
         };
 
         const errorListener = (error: Error) => {
-            this.PasswordService.emit('CLEANUP');
+            this.passwordService.emit('CLEANUP');
             res.status(500).json({ error });
         };
 
-        this.PasswordService.on('FIND_SUCCESS', dataListener).on('ERROR', errorListener).once('CLEANUP', () => {
-            this.PasswordService.removeListener('FIND_SUCCESS', dataListener);
-            this.PasswordService.removeListener('ERROR', errorListener);
+        this.passwordService.on('FIND_SUCCESS', dataListener).on('ERROR', errorListener).once('CLEANUP', () => {
+            this.passwordService.removeListener('FIND_SUCCESS', dataListener);
+            this.passwordService.removeListener('ERROR', errorListener);
         });
-        this.PasswordService.findAll();
+        this.passwordService.findAll();
 
     }
 
@@ -78,25 +88,44 @@ export class PasswordController implements IController<Passwords, PasswordEntity
 
         const dataListener = (result: Passwords) => {
             result.pin = CryptoUtils.decrypt(result.pin);
-            this.PasswordService.emit('CLEANUP');
+            this.passwordService.emit('CLEANUP');
             res.status(200).json(result);
         };
 
         const errorListener = (error: Error) => {
-            this.PasswordService.emit('CLEANUP');
+            this.passwordService.emit('CLEANUP');
             res.status(500).json({ error });
         };
 
-        this.PasswordService.on('FETCH_SUCCESS', dataListener).once('ERROR', errorListener).once('CLEANUP', () => {
-            this.PasswordService.removeListener('FETCH_SUCCESS', dataListener);
-            this.PasswordService.removeListener('ERROR', errorListener);
+        this.passwordService.on('FETCH_SUCCESS', dataListener).once('ERROR', errorListener).once('CLEANUP', () => {
+            this.passwordService.removeListener('FETCH_SUCCESS', dataListener);
+            this.passwordService.removeListener('ERROR', errorListener);
         });
 
-        this.PasswordService.fetch(entity as PasswordEntity);
+        this.passwordService.fetch(entity as PasswordEntity);
     }
 
     public delete(req: Request, res: Response, next: NextFunction): void {
-        throw new Error('Method not implemented.');
+        const model: Passwords = new Passwords();
+        model.nuid = parseInt(req.params.nuid, 10);
+        const entity: IEntity<Passwords> = createEntity(PasswordEntity, model);
+
+        const dataListener = (result: DeleteResult) => {
+            this.passwordService.emit('CLEANUP');
+            res.status(200).json(result);
+        }
+
+        const errorListener = (error: Error) => {
+            this.passwordService.emit('CLEANUP');
+            res.status(500).json({ error });
+        }
+
+        this.passwordService.on('DELETE_SUCCESS', dataListener).on('ERROR', errorListener).once('CLEANUP', () => {
+            this.passwordService.removeListener('DELETE_SUCCESS', dataListener);
+            this.passwordService.removeListener('ERROR', errorListener);
+        });
+
+        this.passwordService.delete(entity as PasswordEntity);
     }
 
 }
