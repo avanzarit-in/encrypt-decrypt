@@ -32,6 +32,12 @@ export class SecretRepository implements IRepository<Secrets, SecretsEntity> {
 
     public async findOne(entity: SecretsEntity): Promise<Secrets> {
         const secretRepository = getRepository(Secrets);
-        return await secretRepository.findOneOrFail(entity.getEntity().id);
+        const userRepository=getRepository(Users);
+      
+
+        return await secretRepository.createQueryBuilder('secret')
+    .innerJoin('secret.user', 'user')
+      .where('user.nuid = :nuid', { nuid: entity.getFk() })
+     .getOne();
     }
 }

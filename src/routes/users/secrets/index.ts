@@ -10,9 +10,9 @@ const routes = express.Router(({ mergeParams: true }));
 
 routes.post('/', create);
 
-routes.get('/', list);
+routes.get('/', fetch);
 
-routes.get('/:id', fetch);
+//routes.get('/:id', fetch);
 
 routes.delete('/:id', del);
 
