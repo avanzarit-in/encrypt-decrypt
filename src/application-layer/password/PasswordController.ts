@@ -1,6 +1,6 @@
 import { IController } from '../IController';
 import { Request, Response, NextFunction } from 'express';
-import { createEntity } from '../../domain-layer/IEntity';
+import { createEntity } from '../../domain-layer/IEntityWithFk';
 import { PasswordEntity } from '../../domain-layer/PasswordEntity';
 import { Passwords } from '../../infrastructure-layer/models/Passwords';
 import { IEntity } from '../../domain-layer/IEntity';
@@ -17,9 +17,10 @@ export class PasswordController implements IController<Passwords, PasswordEntity
     }
     public create(req: Request, res: Response, next: NextFunction): void {
         const model: Passwords = new Passwords();
-        model.nuid = req.body.nuid;
-        model.pin = CryptoUtils.encrypt(req.body.pin.toString());
-        const entity: IEntity<Passwords> = createEntity(PasswordEntity, model);
+        model.password = CryptoUtils.encrypt(req.body.password);
+        model.passwordGroup = req.body.passwordGroup;
+
+        const entity = createEntity(PasswordEntity, model, req.body.nuid);
 
         this.passwordService.once('CREATE_SUCCESS', () => {
             res.status(200).json({});
@@ -34,9 +35,10 @@ export class PasswordController implements IController<Passwords, PasswordEntity
 
     public update(req: Request, res: Response, next: NextFunction): void {
         const model: Passwords = new Passwords();
-        model.nuid = parseInt(req.params.nuid, 10);
-        model.pin = CryptoUtils.encrypt(req.body.pin.toString());
-        const entity: IEntity<Passwords> = createEntity(PasswordEntity, model);
+        model.password = CryptoUtils.encrypt(req.body.password);
+        model.passwordGroup = req.body.passwordGroup;
+
+        const entity = createEntity(PasswordEntity, model, req.body.nuid);
 
         const dataListener = (result: UpdateResult) => {
             this.passwordService.emit('CLEANUP');
@@ -61,7 +63,7 @@ export class PasswordController implements IController<Passwords, PasswordEntity
 
         const dataListener = (result: Passwords[]) => {
             const data = result.map((item: Passwords) => {
-                item.pin = CryptoUtils.decrypt(item.pin);
+                item.password = CryptoUtils.decrypt(item.password);
                 return item;
             });
             this.passwordService.emit('CLEANUP');
@@ -83,11 +85,12 @@ export class PasswordController implements IController<Passwords, PasswordEntity
 
     public fetch(req: Request, res: Response, next: NextFunction): void {
         const model: Passwords = new Passwords();
-        model.nuid = parseInt(req.params.nuid, 10);
-        const entity: IEntity<Passwords> = createEntity(PasswordEntity, model);
+        model.id = parseInt(req.params.id, 10);
+
+        const entity = createEntity(PasswordEntity, model, req.body.nuid);
 
         const dataListener = (result: Passwords) => {
-            result.pin = CryptoUtils.decrypt(result.pin);
+            result.password = CryptoUtils.decrypt(result.password);
             this.passwordService.emit('CLEANUP');
             res.status(200).json(result);
         };
@@ -107,8 +110,9 @@ export class PasswordController implements IController<Passwords, PasswordEntity
 
     public delete(req: Request, res: Response, next: NextFunction): void {
         const model: Passwords = new Passwords();
-        model.nuid = parseInt(req.params.nuid, 10);
-        const entity: IEntity<Passwords> = createEntity(PasswordEntity, model);
+        model.id = parseInt(req.params.id, 10);
+
+        const entity = createEntity(PasswordEntity, model, req.body.nuid);
 
         const dataListener = (result: DeleteResult) => {
             this.passwordService.emit('CLEANUP');
