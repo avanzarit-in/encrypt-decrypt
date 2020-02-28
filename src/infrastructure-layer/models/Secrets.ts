@@ -15,7 +15,7 @@ export class Secrets {
     @Column({ name: 'created_at' })
     public createdAt: Date;
 
-    @OneToOne((type) => Users)
+    @OneToOne((type) => Users, { nullable: false })
     @JoinColumn()
     public user: Users;
 }

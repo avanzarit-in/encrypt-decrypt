@@ -20,7 +20,7 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
         model.secretDate = CryptoUtils.encrypt(req.body.secretDate);
         model.ivrAnswerId = req.body.ivrAnswerId;
 
-        const entity = createEntity(SecretsEntity, model, req.body.nuid);
+        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid,10));
 
         const dataListener = (result: InsertResult) => {
             this.secretService.emit('CLEANUP');
@@ -47,7 +47,7 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
         model.secretDate = CryptoUtils.encrypt(req.body.secretDate);
         model.ivrAnswerId = req.body.ivrAnswerId;
 
-        const entity = createEntity(SecretsEntity, model, req.body.nuid);
+        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid,10));
 
         const dataListener = (result: UpdateResult) => {
             this.secretService.emit('CLEANUP');
@@ -95,7 +95,7 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
     public fetch(req: Request, res: Response, next: NextFunction): void {
         const model: Secrets = new Secrets();
         model.id = parseInt(req.params.id, 10);
-        const entity = createEntity(SecretsEntity, model, req.body.nuid);
+        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid,10));
 
         const dataListener = (result: Secrets) => {
             result.secretDate = CryptoUtils.decrypt(result.secretDate);
@@ -119,7 +119,7 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
     public delete(req: Request, res: Response, next: NextFunction): void {
         const model: Secrets = new Secrets();
         model.id = parseInt(req.params.id, 10);
-        const entity = createEntity(SecretsEntity, model, req.body.nuid);
+        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid,10));
 
         const dataListener = (result: DeleteResult) => {
             this.secretService.emit('CLEANUP');
