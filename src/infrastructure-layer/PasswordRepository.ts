@@ -5,28 +5,28 @@ import { getRepository, UpdateResult, DeleteResult } from 'typeorm';
 
 export class PasswordRepository implements IRepository<Passwords, PasswordEntity> {
     public async delete(entity: PasswordEntity): Promise<DeleteResult> {
-        const PasswordRepository = getRepository(Passwords);
-        return await PasswordRepository.delete(entity.getEntity().id);
+        const passwordRepository = getRepository(Passwords);
+        return await passwordRepository.delete(entity.getEntity().id);
     }
 
     public async create(entity: PasswordEntity) {
-        const PasswordRepository = getRepository(Passwords);
+        const passwordRepository = getRepository(Passwords);
         entity.getEntity().createdAt = new Date();
-        await PasswordRepository.insert(entity.getEntity());
+        await passwordRepository.insert(entity.getEntity());
     }
 
     public async update(entity: PasswordEntity): Promise<UpdateResult> {
-        const PasswordRepository = getRepository(Passwords);
-        return await PasswordRepository.update(entity.getEntity().id, entity.getEntity());
+        const passwordRepository = getRepository(Passwords);
+        return await passwordRepository.update(entity.getEntity().id, entity.getEntity());
     }
 
     public async findAll(): Promise<Passwords[]> {
-        const PasswordRepository = getRepository(Passwords);
-        return await PasswordRepository.find();
+        const passwordRepository = getRepository(Passwords);
+        return await passwordRepository.find();
     }
 
     public async findOne(entity: PasswordEntity): Promise<Passwords> {
-        const PasswordRepository = getRepository(Passwords);
-        return await PasswordRepository.findOneOrFail(entity.getEntity().id);
+        const passwordRepository = getRepository(Passwords);
+        return await passwordRepository.findOneOrFail(entity.getEntity().id);
     }
 }
