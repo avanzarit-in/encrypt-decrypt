@@ -1,12 +1,9 @@
-import { IEntity } from './IEntity';
+import { IEntityWithFk } from './IEntityWithFk';
 import { Passwords } from '../infrastructure-layer/models/Passwords';
 
-export class PasswordEntity implements IEntity<Passwords> {
-    private entity: Passwords;
+export class PasswordEntity implements IEntityWithFk<Passwords, number> {
 
-    public constructor(entity: Passwords) {
-        this.entity = entity;
-    }
+    public constructor(private entity: Passwords, private nuid: number) {}
 
     public getJson(): string {
         return '';
@@ -14,6 +11,10 @@ export class PasswordEntity implements IEntity<Passwords> {
 
     public getEntity(): Passwords {
         return this.entity;
+    }
+
+    public getFk(): number {
+        return this.entity.user.nuid;
     }
 
 }
