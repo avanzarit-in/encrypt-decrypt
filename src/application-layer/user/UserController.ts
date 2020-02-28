@@ -7,7 +7,7 @@ import { IEntity } from '../../domain-layer/IEntity';
 import { UserService } from './UserService';
 import { UserRepository } from '../../infrastructure-layer/UserRepository';
 import CryptoUtils from './../../utils/CryptoUtils';
-import { UpdateResult, DeleteResult } from 'typeorm';
+import { UpdateResult, DeleteResult, InsertResult } from 'typeorm';
 
 export class UserController implements IController<Users, UserEntity, UserRepository, UserService> {
     private userService: UserService;
@@ -21,11 +21,19 @@ export class UserController implements IController<Users, UserEntity, UserReposi
         model.pin = CryptoUtils.encrypt(req.body.pin.toString());
         const entity: IEntity<Users> = createEntity(UserEntity, model);
 
-        this.userService.once('CREATE_SUCCESS', () => {
-            res.status(200).json({});
-        }).once('ERROR', (error) => {
+        const dataListener = (result: InsertResult) => {
+            this.userService.emit('CLEANUP');
+            res.status(200).json(result);
+        };
 
+        const errorListener = (error: Error) => {
+            this.userService.emit('CLEANUP');
             res.status(500).json({ error });
+        };
+
+        this.userService.once('CREATE_SUCCESS', dataListener).once('ERROR', errorListener).once('CLEANUP', () => {
+            this.userService.removeListener('CREATE_SUCCESS', dataListener);
+            this.userService.removeListener('ERROR', errorListener);
         });
 
         this.userService.create(entity as UserEntity);

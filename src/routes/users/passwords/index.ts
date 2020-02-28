@@ -8,14 +8,16 @@ import update from './update';
 
 const routes = express.Router(({ mergeParams: true }));
 
-routes.post('/', create);
+routes.post('/:passgrp', create);
 
 routes.get('/', list);
 
-routes.get('/:id', fetch);
+//routes.get('/:passgrp', list);
 
-routes.delete('/:id', del);
+routes.get('/:passgrp', fetch);
 
-routes.put('/:id', update);
+routes.delete('/:passgrp', del);
+
+routes.put('/:passgrp', update);
 
 export default routes;
