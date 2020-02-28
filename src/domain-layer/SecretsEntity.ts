@@ -1,4 +1,3 @@
-import { IEntity } from './IEntity';
 import { Secrets } from '../infrastructure-layer/models/Secrets';
 import { IEntityWithFk } from './IEntityWithFk';
 
