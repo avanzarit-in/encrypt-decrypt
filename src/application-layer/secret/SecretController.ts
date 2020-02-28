@@ -1,6 +1,6 @@
 import { IController } from '../IController';
 import { Request, Response, NextFunction } from 'express';
-import { createEntity} from '../../domain-layer/IEntityWithFk';
+import { createEntity } from '../../domain-layer/IEntityWithFk';
 import { SecretsEntity } from '../../domain-layer/SecretsEntity';
 import { Secrets } from '../../infrastructure-layer/models/Secrets';
 import { SecretService } from './SecretService';
@@ -20,7 +20,7 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
         model.secretDate = CryptoUtils.encrypt(req.body.secretDate);
         model.ivrAnswerId = req.body.ivrAnswerId;
 
-        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid,10));
+        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid, 10));
 
         const dataListener = (result: InsertResult) => {
             this.secretService.emit('CLEANUP');
@@ -43,11 +43,10 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
 
     public update(req: Request, res: Response, next: NextFunction): void {
         const model: Secrets = new Secrets();
-        model.id = parseInt(req.params.id, 10);
         model.secretDate = CryptoUtils.encrypt(req.body.secretDate);
         model.ivrAnswerId = req.body.ivrAnswerId;
 
-        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid,10));
+        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid, 10));
 
         const dataListener = (result: UpdateResult) => {
             this.secretService.emit('CLEANUP');
@@ -94,8 +93,7 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
 
     public fetch(req: Request, res: Response, next: NextFunction): void {
         const model: Secrets = new Secrets();
-        model.id = parseInt(req.params.id, 10);
-        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid,10));
+        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid, 10));
 
         const dataListener = (result: Secrets) => {
             result.secretDate = CryptoUtils.decrypt(result.secretDate);
@@ -118,8 +116,7 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
 
     public delete(req: Request, res: Response, next: NextFunction): void {
         const model: Secrets = new Secrets();
-        model.id = parseInt(req.params.id, 10);
-        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid,10));
+        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid, 10));
 
         const dataListener = (result: DeleteResult) => {
             this.secretService.emit('CLEANUP');

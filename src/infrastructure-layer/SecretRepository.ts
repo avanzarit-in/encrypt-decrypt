@@ -7,7 +7,8 @@ import { getRepository, UpdateResult, DeleteResult, InsertResult } from 'typeorm
 export class SecretRepository implements IRepository<Secrets, SecretsEntity> {
     public async delete(entity: SecretsEntity): Promise<DeleteResult> {
         const secretRepository = getRepository(Secrets);
-        return await secretRepository.delete(entity.getEntity().id);
+        const secret: Secrets = await this.findOne(entity);
+        return await secretRepository.delete(secret.id);
     }
 
     public async create(entity: SecretsEntity): Promise<InsertResult> {
@@ -22,7 +23,8 @@ export class SecretRepository implements IRepository<Secrets, SecretsEntity> {
 
     public async update(entity: SecretsEntity): Promise<UpdateResult> {
         const secretRepository = getRepository(Secrets);
-        return await secretRepository.update(entity.getEntity().id, entity.getEntity());
+        const secret: Secrets = await this.findOne(entity);
+        return await secretRepository.update(secret.id, entity.getEntity());
     }
 
     public async findAll(): Promise<Secrets[]> {
@@ -32,12 +34,9 @@ export class SecretRepository implements IRepository<Secrets, SecretsEntity> {
 
     public async findOne(entity: SecretsEntity): Promise<Secrets> {
         const secretRepository = getRepository(Secrets);
-        const userRepository=getRepository(Users);
-      
-
         return await secretRepository.createQueryBuilder('secret')
-    .innerJoin('secret.user', 'user')
-      .where('user.nuid = :nuid', { nuid: entity.getFk() })
-     .getOne();
+            .innerJoin('secret.user', 'user')
+            .where('user.nuid = :nuid', { nuid: entity.getFk() })
+            .getOne();
     }
 }

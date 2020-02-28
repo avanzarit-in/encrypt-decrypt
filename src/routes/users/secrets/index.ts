@@ -14,8 +14,8 @@ routes.get('/', fetch);
 
 //routes.get('/:id', fetch);
 
-routes.delete('/:id', del);
+routes.delete('/', del);
 
-routes.put('/:id', update);
+routes.put('/', update);
 
 export default routes;
