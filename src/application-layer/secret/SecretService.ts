@@ -2,14 +2,14 @@ import { IService } from '../IService';
 import { SecretsEntity } from '../../domain-layer/SecretsEntity';
 import { Secrets } from '../../infrastructure-layer/models/Secrets';
 import { SecretRepository } from '../../infrastructure-layer/SecretRepository';
-import { UpdateResult, DeleteResult } from 'typeorm';
+import { UpdateResult, DeleteResult, InsertResult } from 'typeorm';
 import {EventEmitter} from './../EventEmitter';
 
 // Define your emitter's types like that:
 // Key: Event name; Value: Listener function signature
 export interface ISecretServiceEvents {
     ERROR: (error: Error) => void;
-    CREATE_SUCCESS: () => void;
+    CREATE_SUCCESS: (result: InsertResult) => void;
     UPDATE_SUCCESS: (result: UpdateResult) => void;
     DELETE_SUCCESS: (result: DeleteResult) => void;
     FIND_SUCCESS: (result: Secrets[]) => void;
@@ -26,8 +26,8 @@ export class SecretService extends EventEmitter<ISecretServiceEvents> implements
     }
 
     public create(entity: SecretsEntity) {
-        this.repository.create(entity).then(() => {
-            this.emit('CREATE_SUCCESS');
+        this.repository.create(entity).then((result: InsertResult) => {
+            this.emit('CREATE_SUCCESS', result);
         }).catch((error) => {
             return this.emit('ERROR', error);
         });

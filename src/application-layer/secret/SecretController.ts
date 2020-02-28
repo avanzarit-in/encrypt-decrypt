@@ -7,7 +7,7 @@ import { IEntity } from '../../domain-layer/IEntity';
 import { SecretService } from './SecretService';
 import { SecretRepository } from '../../infrastructure-layer/SecretRepository';
 import CryptoUtils from './../../utils/CryptoUtils';
-import { UpdateResult, DeleteResult } from 'typeorm';
+import { UpdateResult, DeleteResult, InsertResult } from 'typeorm';
 
 export class SecretController implements IController<Secrets, SecretsEntity, SecretRepository, SecretService> {
 
@@ -23,11 +23,19 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
 
         const entity = createEntity(SecretsEntity, model, req.body.nuid);
 
-        this.secretService.once('CREATE_SUCCESS', () => {
-            res.status(200).json({});
-        }).once('ERROR', (error) => {
+        const dataListener = (result: InsertResult) => {
+            this.secretService.emit('CLEANUP');
+            res.status(200).json(result);
+        };
 
+        const errorListener = (error: Error) => {
+            this.secretService.emit('CLEANUP');
             res.status(500).json({ error });
+        };
+
+        this.secretService.once('CREATE_SUCCESS', dataListener).once('ERROR', errorListener).once('CLEANUP', () => {
+            this.secretService.removeListener('CREATE_SUCCESS', dataListener);
+            this.secretService.removeListener('ERROR', errorListener);
         });
 
         this.secretService.create(entity as SecretsEntity);
@@ -45,12 +53,12 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
         const dataListener = (result: UpdateResult) => {
             this.secretService.emit('CLEANUP');
             res.status(200).json(result);
-        }
+        };
 
         const errorListener = (error: Error) => {
             this.secretService.emit('CLEANUP');
             res.status(500).json({ error });
-        }
+        };
 
         this.secretService.on('UPDATE_SUCCESS', dataListener).on('ERROR', errorListener).once('CLEANUP', () => {
             this.secretService.removeListener('UPDATE_SUCCESS', dataListener);
