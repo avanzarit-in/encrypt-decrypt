@@ -41,7 +41,7 @@ class App {
   public listen() {
 
     console.log({
-      type: 'postgres',
+      type: 'mssql',
       host: process.env.DATABASE_HOST,
       port: parseInt(process.env.DATABASE_PORT, 10),
       username: process.env.DATABASE_USERNAME,
@@ -67,7 +67,7 @@ class App {
       },
     });
     createConnection({
-      type: 'postgres',
+      type: 'mssql',
       host: process.env.DATABASE_HOST,
       port: parseInt(process.env.DATABASE_PORT, 10),
       username: process.env.DATABASE_USERNAME,

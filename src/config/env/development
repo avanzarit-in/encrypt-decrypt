@@ -7,14 +7,27 @@
  *
  */
 
-
 SERVER_PORT='45452'
 ENCRYPTION_KEY='123456789asdfghjklzxcvbnmqwertyq'
-DATABASE_HOST='localhost'
-DATABASE_PORT='5432'
-DATABASE_USERNAME='SPADHI'
-DATABASE_PASSWORD='admin'
-DATABASE_SCHEMA='postgres'
+/*
+* For POSTGRES Server settings 
+*
+* DATABASE_HOST='localhost'
+* DATABASE_PORT='5432'
+* DATABASE_USERNAME='SPADHI'
+* DATABASE_PASSWORD='admin'
+* DATABASE_SCHEMA='postgres'
+*/
+
+/*
+* FOR MS SQL Server settings
+*/
+ DATABASE_HOST='desktop-v3nep0o\sqlexpress'
+ DATABASE_PORT='1433'
+ DATABASE_USERNAME='sa'
+ DATABASE_PASSWORD='Avanzar@1234'
+ DATABASE_SCHEMA='webservice'
+
 
     
 
