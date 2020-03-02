@@ -8,6 +8,7 @@ import update from './update';
 
 import secrets from './secrets';
 import passwords from './passwords';
+import validatepin from './validatepin';
 
 const routes = express.Router(({ mergeParams: true }));
 
@@ -21,7 +22,10 @@ routes.delete('/:nuid', del);
 
 routes.put('/:nuid', update);
 
+
+
 routes.use('/:nuid/secrets', secrets);
 routes.use('/:nuid/passwords', passwords);
+routes.use('/:nuid/validatepin', validatepin);
 
 export default routes;
