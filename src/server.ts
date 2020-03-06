@@ -8,22 +8,16 @@ import { createRepository } from './infrastructure-layer/IReposiroty';
 import { UserController } from './application-layer/user/UserController';
 import { UserService } from './application-layer/user/UserService';
 import { UserRepository } from './infrastructure-layer/UserRepository';
-
 import { SecretRepository } from './infrastructure-layer/SecretRepository';
-import { PasswordRepository } from './infrastructure-layer/PasswordRepository';
 import { SecretController } from './application-layer/Secret/SecretController';
 import {SecretService} from './application-layer/secret/SecretService';
-import { PasswordController } from './application-layer/Password/PasswordController';
-import { PasswordService } from './application-layer/password/PasswordService';
 import { RegistrationController } from './application-layer/registration/RegistrationController';
 import { RegistrationService } from './application-layer/registration/RegistrationService';
 
 const controllersMap: Map<string, IController<any, any, any, any>> = new Map<string, IController<any, any, any, any>>();
 controllersMap.set(UserController.name, createController(UserController, createService(UserService, createRepository(UserRepository) as UserRepository) as UserService));
 controllersMap.set(SecretController.name, createController(SecretController, createService(SecretService, createRepository(SecretRepository) as SecretRepository) as SecretService));
-controllersMap.set(PasswordController.name, createController(PasswordController, createService(PasswordService, createRepository(PasswordRepository) as PasswordRepository) as PasswordService));
 controllersMap.set(RegistrationController.name, createController(RegistrationController, createService(RegistrationService, createRepository(UserRepository) as UserRepository) as RegistrationService));
-
 
 export const app = new App(
   controllersMap,
