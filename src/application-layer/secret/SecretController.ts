@@ -29,7 +29,7 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
 
         const errorListener = (error: Error) => {
             this.secretService.emit('CLEANUP');
-            res.status(500).json({ error });
+            res.status(500).json({ error:{message:error.message} });
         };
 
         this.secretService.once('CREATE_SUCCESS', dataListener).once('ERROR', errorListener).once('CLEANUP', () => {
@@ -55,7 +55,7 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
 
         const errorListener = (error: Error) => {
             this.secretService.emit('CLEANUP');
-            res.status(500).json({ error });
+            res.status(500).json({ error:{message:error.message} });
         };
 
         this.secretService.on('UPDATE_SUCCESS', dataListener).on('ERROR', errorListener).once('CLEANUP', () => {

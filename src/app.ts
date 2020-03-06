@@ -73,7 +73,7 @@ class App {
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_SCHEMA,
-      synchronize: true,
+      synchronize: false,
       logging: true,
       entities: [
         Users,

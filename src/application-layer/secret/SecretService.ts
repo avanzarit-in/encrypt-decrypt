@@ -2,6 +2,7 @@ import { IService } from '../IService';
 import { SecretsEntity } from '../../domain-layer/SecretsEntity';
 import { Secrets } from '../../infrastructure-layer/models/Secrets';
 import { SecretRepository } from '../../infrastructure-layer/SecretRepository';
+import { UserRepository } from '../../infrastructure-layer/UserRepository';
 import { UpdateResult, DeleteResult, InsertResult } from 'typeorm';
 import {EventEmitter} from './../EventEmitter';
 
@@ -29,6 +30,7 @@ export class SecretService extends EventEmitter<ISecretServiceEvents> implements
         this.repository.create(entity).then((result: InsertResult) => {
             this.emit('CREATE_SUCCESS', result);
         }).catch((error) => {
+            console.log(error);
             return this.emit('ERROR', error);
         });
     }
