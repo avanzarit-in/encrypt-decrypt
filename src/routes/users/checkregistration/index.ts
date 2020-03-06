@@ -1,8 +1,10 @@
 import express from 'express';
-import validatepin from './validatepin';
+
+import checkRegistration from './checkregistration';
 
 const routes = express.Router(({ mergeParams: true }));
 
-routes.post('/', validatepin);
+routes.post('/', checkRegistration);
+
 
 export default routes;

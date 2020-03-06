@@ -5,16 +5,17 @@ import { UserRepository } from '../../infrastructure-layer/UserRepository';
 import { EventEmitter } from './../EventEmitter';
 import CryptoUtils from './../../utils/CryptoUtils';
 
-export interface IValidationResult {
-    message: string,
-    status: boolean
+enum REGISTRATION_STATUS {REGISTERED=1, NOT_REGISTERED=0};
+enum VALIDATE_PIN_STATUS{VALID=1, INVALID=0};
+export interface IResult {
+    result: number
 }
 
 // Define your emitter's types like that:
 // Key: Event name; Value: Listener function signature
 export interface IRegistrationServiceEvents {
     ERROR: (error: Error) => void;
-    SUCCESS: (result: IValidationResult) => void;
+    SUCCESS: (result: IResult) => void;
     CLEANUP: () => void;
 }
 
@@ -26,16 +27,29 @@ export class RegistrationService extends EventEmitter<IRegistrationServiceEvents
         this.repository = repository;
     }
 
-    public validate(entity: UserEntity) {
+    public checkRegistration(entity: UserEntity) {
+        this.repository.findOne(entity).then((result: Users) => {
+            const pin=CryptoUtils.decrypt(result.pin)
+            if (pin==="disabled") {
+                this.emit('SUCCESS', { result: REGISTRATION_STATUS.REGISTERED });
+            } else {
+                this.emit('SUCCESS', { result: REGISTRATION_STATUS.NOT_REGISTERED });
+            }
+
+        }).catch((error) => {
+            return this.emit('ERROR', error);
+        });
+    }
+
+    public validatePin(entity: UserEntity) {
         this.repository.findOne(entity).then((result: Users) => {
             const pin=CryptoUtils.decrypt(result.pin)
             if (entity.getEntity().pin === pin) {
-                console.log("here");
-                this.emit('SUCCESS', { message: "User pin match", status: true });
-            } else if (pin === "disabled") {
-                this.emit('SUCCESS', { message: "User has already registered", status: false });
-            } else {
-                this.emit('SUCCESS', { message: "User pin does not match validation failed", status: false });
+                this.emit('SUCCESS', { result: VALIDATE_PIN_STATUS.VALID });
+            } else if(entity.getEntity().pin==='disabled') {
+                return this.emit('ERROR', new Error("User Already registered"));
+            }else {
+                this.emit('SUCCESS', { result: VALIDATE_PIN_STATUS.INVALID });
             }
 
         }).catch((error) => {

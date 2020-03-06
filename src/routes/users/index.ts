@@ -8,24 +8,20 @@ import update from './update';
 
 import secrets from './secrets';
 import passwords from './passwords';
+import checkRegistration from './checkregistration';
 import validatepin from './validatepin';
 
 const routes = express.Router(({ mergeParams: true }));
 
 routes.post('/', create);
-
 routes.get('/', list);
-
 routes.get('/:nuid', fetch);
-
 routes.delete('/:nuid', del);
-
 routes.put('/:nuid', update);
-
-
 
 routes.use('/:nuid/secrets', secrets);
 routes.use('/:nuid/passwords', passwords);
+routes.use('/:nuid/checkregistration', checkRegistration);
 routes.use('/:nuid/validatepin', validatepin);
 
 export default routes;
