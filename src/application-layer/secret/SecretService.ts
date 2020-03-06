@@ -2,10 +2,10 @@ import { IService } from '../IService';
 import { SecretsEntity } from '../../domain-layer/SecretsEntity';
 import { Secrets } from '../../infrastructure-layer/models/Secrets';
 import { SecretRepository } from '../../infrastructure-layer/SecretRepository';
-import { UserRepository } from '../../infrastructure-layer/UserRepository';
 import { UpdateResult, DeleteResult, InsertResult } from 'typeorm';
 import {EventEmitter} from './../EventEmitter';
 import {APIError} from './../../APIError';
+import CryptoUtils from './../../utils/CryptoUtils';
 
 export interface IResult {
     result: number
@@ -20,6 +20,7 @@ export interface ISecretServiceEvents {
     CREATE_SUCCESS: (result: IResult) => void;
     UPDATE_SUCCESS: (result: IResult) => void;
     DELETE_SUCCESS: (result: IResult) => void;
+    AUTHENTICATE_SUCCESS: (result: IResult) => void;
     FETCH_SUCCESS: (result: Secrets) => void;
     CLEANUP: () => void;
 }
@@ -31,6 +32,26 @@ export class SecretService extends EventEmitter<ISecretServiceEvents> implements
     constructor(repository: SecretRepository) {
         super();
         this.repository = repository;
+    }
+
+    public authenticate(entity: SecretsEntity) {
+        this.repository.findOne(entity).then((result: Secrets) => {
+            if(result){
+            console.log(CryptoUtils.decrypt(result.secretDate));
+            console.log(entity.getEntity().secretDate);
+            
+                if(entity.getEntity().secretDate===CryptoUtils.decrypt(result.secretDate)){
+                    this.emit('AUTHENTICATE_SUCCESS', { result: RESPONSE_STATUS.VALID });
+                }else{
+                    this.emit('AUTHENTICATE_SUCCESS', { result: RESPONSE_STATUS.INVALID });
+                }
+            
+            }else{
+                this.emit('ERROR', new APIError("No secret data found for the user"))
+            }
+        }).catch((error) => {
+            this.emit('ERROR', error);
+        });
     }
 
     public create(entity: SecretsEntity) {

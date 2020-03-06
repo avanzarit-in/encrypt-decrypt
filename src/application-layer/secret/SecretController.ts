@@ -18,6 +18,31 @@ export class SecretController implements IController<Secrets, SecretsEntity, Sec
     public constructor(secretService: SecretService) {
         this.secretService = secretService;
     }
+
+    public authenticate(req: Request, res: Response, next: NextFunction): void{
+        const model: Secrets = new Secrets();
+        model.secretDate = req.body.secretDate;
+
+        const entity = createEntity(SecretsEntity, model, parseInt(req.params.nuid, 10));
+
+        const dataListener = (result: IResult) => {
+            this.secretService.emit('CLEANUP');
+            res.status(200).json(result);
+        };
+
+        const errorListener = (error: Error) => {
+            this.secretService.emit('CLEANUP');
+            res.status(500).json({ error });
+        };
+
+        this.secretService.once('AUTHENTICATE_SUCCESS', dataListener).once('ERROR', errorListener).once('CLEANUP', () => {
+            this.secretService.removeListener('AUTHENTICATE_SUCCESS', dataListener);
+            this.secretService.removeListener('ERROR', errorListener);
+        });
+
+        this.secretService.authenticate(entity as SecretsEntity);
+    }
+
     public create(req: Request, res: Response, next: NextFunction): void {
         const model: Secrets = new Secrets();
         model.secretDate = CryptoUtils.encrypt(req.body.secretDate);

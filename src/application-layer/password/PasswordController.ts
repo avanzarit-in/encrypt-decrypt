@@ -25,13 +25,11 @@ export class PasswordController implements IController<Passwords, PasswordEntity
         this.passwordService.once('CREATE_SUCCESS', () => {
             res.status(200).json({});
         }).once('ERROR', (error) => {
-
             res.status(500).json({ error });
         });
 
         this.passwordService.create(entity as PasswordEntity);
     }
-
 
     public update(req: Request, res: Response, next: NextFunction): void {
         const model: Passwords = new Passwords();
@@ -57,7 +55,6 @@ export class PasswordController implements IController<Passwords, PasswordEntity
 
         this.passwordService.update(entity as PasswordEntity);
     }
-
 
     public list(req: Request, res: Response, next: NextFunction): void {
 

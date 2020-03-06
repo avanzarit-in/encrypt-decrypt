@@ -10,6 +10,7 @@ import secrets from './secrets';
 import passwords from './passwords';
 import checkRegistration from './checkregistration';
 import validatepin from './validatepin';
+import authenticate from './authenticate';
 
 const routes = express.Router(({ mergeParams: true }));
 
@@ -23,5 +24,6 @@ routes.use('/:nuid/secrets', secrets);
 routes.use('/:nuid/passwords', passwords);
 routes.use('/:nuid/checkregistration', checkRegistration);
 routes.use('/:nuid/validatepin', validatepin);
+routes.use('/:nuid/authenticate', authenticate);
 
 export default routes;

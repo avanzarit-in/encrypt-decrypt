@@ -15,6 +15,8 @@ export class UserController implements IController<Users, UserEntity, UserReposi
     public constructor(userService: UserService) {
         this.userService = userService;
     }
+
+
     public create(req: Request, res: Response, next: NextFunction): void {
         const model: Users = new Users();
         model.nuid = req.body.nuid;
