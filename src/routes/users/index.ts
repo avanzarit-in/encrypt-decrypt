@@ -7,7 +7,6 @@ import fetch from './fetch';
 import update from './update';
 
 import secrets from './secrets';
-import passwords from './passwords';
 import checkRegistration from './checkregistration';
 import validatepin from './validatepin';
 
@@ -20,7 +19,6 @@ routes.delete('/:nuid', del);
 routes.put('/:nuid', update);
 
 routes.use('/:nuid/secrets', secrets);
-routes.use('/:nuid/passwords', passwords);
 routes.use('/:nuid/checkregistration', checkRegistration);
 routes.use('/:nuid/validatepin', validatepin);
 
