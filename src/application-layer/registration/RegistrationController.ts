@@ -45,7 +45,11 @@ export class RegistrationController implements IController<Users, UserEntity, Us
 
         const errorListener = (error: Error) => {
             this.registrationService.emit('CLEANUP');
+            if(error.name==="EntityNotFound"){
+                res.status(404).json({error})
+            }else{
             res.status(500).json({ error });
+            }
         }
 
         this.registrationService.on('SUCCESS', dataListener)

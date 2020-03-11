@@ -9,7 +9,6 @@ import cors from 'cors';
 import { IController } from './application-layer/IController';
 import { createConnection } from 'typeorm';
 import { Users } from './infrastructure-layer/models/Users';
-import { Passwords } from './infrastructure-layer/models/Passwords';
 import { Secrets } from './infrastructure-layer/models/Secrets';
 
 import routes from './routes';
@@ -51,7 +50,6 @@ class App {
       logging: true,
       entities: [
         Users,
-        Passwords,
         Secrets
       ],
       migrations: [
@@ -77,7 +75,6 @@ class App {
       logging: true,
       entities: [
         Users,
-        Passwords,
         Secrets
       ],
       migrations: [

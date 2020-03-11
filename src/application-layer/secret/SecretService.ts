@@ -4,14 +4,14 @@ import { Secrets } from '../../infrastructure-layer/models/Secrets';
 import { SecretRepository } from '../../infrastructure-layer/SecretRepository';
 import { UserRepository } from '../../infrastructure-layer/UserRepository';
 import { UpdateResult, DeleteResult, InsertResult } from 'typeorm';
-import {EventEmitter} from './../EventEmitter';
-import {APIError} from './../../APIError';
+import { EventEmitter } from './../EventEmitter';
+import { APIError } from './../../APIError';
 
 export interface IResult {
     result: number
 }
 
-enum RESPONSE_STATUS{VALID=1, INVALID=0};
+enum RESPONSE_STATUS { VALID = 1, INVALID = 0 };
 
 // Define your emitter's types like that:
 // Key: Event name; Value: Listener function signature
@@ -25,7 +25,7 @@ export interface ISecretServiceEvents {
 }
 
 export class SecretService extends EventEmitter<ISecretServiceEvents> implements IService<Secrets, SecretsEntity, SecretRepository>  {
-    
+
 
     private repository: SecretRepository;
     constructor(repository: SecretRepository) {
@@ -34,11 +34,15 @@ export class SecretService extends EventEmitter<ISecretServiceEvents> implements
     }
 
     public create(entity: SecretsEntity) {
-        this.repository.create(entity).then((result: InsertResult) => {
+        this.repository.create(entity).then((result: void) => {
             this.emit('CREATE_SUCCESS', { result: RESPONSE_STATUS.VALID });
         }).catch((error) => {
-            console.log(error);
-            return this.emit('ERROR', error);
+            if (error.message === "Secret already Set") {
+                this.emit('CREATE_SUCCESS', { result: RESPONSE_STATUS.INVALID });
+            } else {
+                console.log(error);
+                return this.emit('ERROR', error);
+            }
         });
     }
     public update(entity: SecretsEntity) {
@@ -58,9 +62,9 @@ export class SecretService extends EventEmitter<ISecretServiceEvents> implements
 
     public fetch(entity: SecretsEntity) {
         this.repository.findOne(entity).then((result: Secrets) => {
-            if(result){
-            this.emit('FETCH_SUCCESS', result);
-            }else{
+            if (result) {
+                this.emit('FETCH_SUCCESS', result);
+            } else {
                 this.emit('ERROR', new APIError("No secret data found for the user"))
             }
         }).catch((error) => {
@@ -68,9 +72,9 @@ export class SecretService extends EventEmitter<ISecretServiceEvents> implements
         });
     }
 
-    public findAll(){
+    public findAll() {
         throw new Error("Method not implemented.");
     }
 
-   
+
 }
